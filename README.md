@@ -24,34 +24,87 @@ Proyecto final para el curso **Backend II** de Coderhouse.
 
 ## 📁 Estructura del proyecto (arquitectura por capas)
 Backend II/
-├── .env.example
+├── config
+│   └── config.js
+├── logs
+├── src
+│   ├── config
+│   │   ├── config.js
+│   │   ├── db.js
+│   │   └── passport.config.js
+│   ├── controllers
+│   │   ├── cart.controller.js
+│   │   ├── product.controller.js
+│   │   ├── session.controller.js
+│   │   └── user.controller.js
+│   ├── dao
+│   │   ├── models
+│   │   │   ├── cart.model.js
+│   │   │   ├── product.model.js
+│   │   │   ├── ticket.model.js
+│   │   │   └── user.model.js
+│   │   ├── mongo
+│   │   │   ├── cart.dao.js
+│   │   │   ├── product.dao.js
+│   │   │   ├── ticket.dao.js
+│   │   │   └── user.dao.js
+│   │   └── factory.js
+│   ├── dtos
+│   │   └── user.dto.js
+│   ├── middlewares
+│   │   ├── authJwt.js
+│   │   ├── errorHandler.js
+│   │   └── handlePolicies.js
+│   ├── models
+│   │   ├── Cart.js
+│   │   ├── Product.js
+│   │   ├── Ticket.js
+│   │   └── User.js
+│   ├── public
+│   │   ├── css
+│   │   │   └── style.css
+│   │   └── js
+│   │       └── realTime.js
+│   ├── repositories
+│   │   ├── cart.repository.js
+│   │   ├── product.repository.js
+│   │   ├── ticket.repository.js
+│   │   └── user.repository.js
+│   ├── routes
+│   │   ├── carts.routes.js
+│   │   ├── products.routes.js
+│   │   ├── session.routes.js
+│   │   ├── user.routes.js
+│   │   └── views.routes.js
+│   ├── services
+│   │   ├── cart.service.js
+│   │   ├── index.js
+│   │   ├── product.service.js
+│   │   └── ticket.service.js
+│   ├── utils
+│   │   ├── bcrypt.js
+│   │   ├── cookieExtractor.js
+│   │   ├── jwt.js
+│   │   └── mailer.js
+│   ├── views
+│   │   ├── layouts
+│   │   │   └── main.handlebars
+│   │   ├── cart.handlebars
+│   │   ├── home.handlebars
+│   │   ├── productDetail.handlebars
+│   │   ├── products.handlebars
+│   │   ├── realTimeProducts.handlebars
+│   │   └── ticket.handlebars
+│   ├── app.js
+│   ├── server.js
+│   └── utils.js
+├── cookies.txt
+├── createAdmin.js
 ├── package.json
-├── seed.js # Carga productos iniciales
-├── createAdmin.js # Crea usuario administrador
+├── package-lock.json
 ├── README.md
-├── config/
-│ └── config.js # Configuración centralizada
-├── src/
-│ ├── app.js # Configuración de Express, Handlebars, Socket.io
-│ ├── server.js # Punto de entrada (levanta el servidor)
-│ ├── utils.js # Utilidad __dirname para ES modules
-│ ├── dao/
-│ │ ├── factory.js # Patrón Factory (persistencia)
-│ │ ├── models/ # Modelos Mongoose
-│ │ └── mongo/ # DAOs específicos para MongoDB
-│ ├── repositories/ # Capa de repositorios
-│ ├── controllers/ # Lógica de negocio
-│ ├── routes/ # Definición de rutas
-│ ├── middlewares/ # handlePolicies, errorHandler, authJwt
-│ ├── utils/ # bcrypt, jwt, cookieExtractor, mailer
-│ ├── dtos/ # Data Transfer Object (UserDto)
-│ ├── services/ # Servicios (product, cart, ticket)
-│ ├── views/ # Plantillas Handlebars
-│ └── public/ # Archivos estáticos (CSS, JS)
-└── logs/ # (opcional)
-
-
-
+├── seed.js
+└── test-server.js
 ---
 
 ## ⚙️ Instalación y configuración
