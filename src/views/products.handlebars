@@ -1,0 +1,144 @@
+<h1>🛍️ Todos los Productos</h1>
+
+<div class="filters">
+  <form method="GET" action="/products">
+    <label>Límite: 
+      <select name="limit">
+        <option value="3" {{#if (eq pagination.limit 3)}}selected{{/if}}>3</option>
+        <option value="5" {{#if (eq pagination.limit 5)}}selected{{/if}}>5</option>
+        <option value="10" {{#if (eq pagination.limit 10)}}selected{{/if}}>10</option>
+      </select>
+    </label>
+    
+    <label>Ordenar precio: 
+      <select name="sort">
+        <option value="">Sin orden</option>
+        <option value="asc" {{#if (eq pagination.sort "asc")}}selected{{/if}}>Ascendente</option>
+        <option value="desc" {{#if (eq pagination.sort "desc")}}selected{{/if}}>Descendente</option>
+      </select>
+    </label>
+    
+    <label>Filtrar: 
+      <input type="text" name="query" placeholder="Ej: category:merchandising" value="{{pagination.query}}">
+    </label>
+    
+    <button type="submit">Aplicar</button>
+  </form>
+</div>
+
+<div class="products-grid">
+  {{#each products}}
+    <div class="product-card">
+      <h3>{{this.title}}</h3>
+      <p>{{this.description}}</p>
+      <p class="price">💰 ${{this.price}}</p>
+      <p>📦 Stock: {{this.stock}}</p>
+      <a href="/products/{{this._id}}">Ver detalle</a>
+      <button class="add-to-cart" data-id="{{this._id}}">➕ Agregar al carrito</button>
+    </div>
+  {{/each}}
+</div>
+
+<div class="pagination">
+  {{#if pagination.hasPrevPage}}
+    <a href="/products?limit={{pagination.limit}}&page={{pagination.prevPage}}&sort={{pagination.sort}}&query={{pagination.query}}">⬅ Anterior</a>
+  {{/if}}
+  
+  <span>Página {{pagination.page}} de {{pagination.totalPages}}</span>
+  
+  {{#if pagination.hasNextPage}}
+    <a href="/products?limit={{pagination.limit}}&page={{pagination.nextPage}}&sort={{pagination.sort}}&query={{pagination.query}}">Siguiente ➡</a>
+  {{/if}}
+</div>
+
+<script>
+  // Obtener el carrito del usuario actual
+async function getCartId() {
+  // Primero, obtener el usuario actual
+  const userRes = await fetch('/api/session/current', {
+    credentials: 'include'
+  });
+  const userData = await userRes.json();
+  
+  if (userData.user && userData.user.cart) {
+    // El usuario tiene un carrito asociado
+    return userData.user.cart;
+  } else {
+    // Si no tiene carrito (caso raro), crear uno nuevo
+    const newCartRes = await fetch('/api/carts', { method: 'POST' });
+    const newCart = await newCartRes.json();
+    return newCart.payload._id;
+  }
+}
+
+  // Función para agregar al carrito usando el carrito del usuario logueado
+  async function addToCart(productId) {
+    // Mostrar mensaje de carga
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ Agregando...';
+    btn.disabled = true;
+    
+    try {
+      // Obtener el usuario actual y su carrito
+      const userRes = await fetch('/api/session/current', { 
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (!userRes.ok) {
+        throw new Error('No estás autenticado. Por favor, inicia sesión.');
+      }
+      
+      const userData = await userRes.json();
+      
+      if (!userData.user || !userData.user.cart) {
+        throw new Error('No se encontró un carrito asociado a tu usuario.');
+      }
+      
+      const cartId = userData.user.cart;
+      
+      // Agregar producto al carrito
+      const res = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quantity: 1 }),
+        credentials: 'include'
+      });
+      
+      const result = await res.json();
+      
+      if (res.ok) {
+        alert('✅ Producto agregado al carrito exitosamente!');
+        // Opcional: cambiar el botón para indicar éxito
+        btn.textContent = '✓ Agregado';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }, 2000);
+      } else {
+        throw new Error(result.error || 'Error al agregar el producto');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`❌ ${error.message}`);
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  }
+
+  // Adjuntar eventos a los botones después de cargar la página
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const productId = btn.getAttribute('data-id');
+        if (productId) {
+          addToCart(productId);
+        }
+      });
+    });
+  });
+
+</script>

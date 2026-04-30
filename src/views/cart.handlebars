@@ -1,0 +1,139 @@
+<h1>🛒 Mi Carrito - Depuración</h1>
+
+{{#if hasProducts}}
+  <p><strong>Total de productos:</strong> {{products.length}}</p>
+  <p><strong>Monto total:</strong> ${{total}}</p>
+  
+  <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Código</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each products}}
+        <tr>
+          <td>
+            <strong>{{this.product.title}}</strong><br>
+            <small>{{this.product.description}}</small>
+          </td>
+          <td>{{this.product.code}}</td>
+          <td>${{this.product.price}}</td>
+          <td>
+            <input type="number" 
+                   class="qty-input" 
+                   data-cartid="{{../cart._id}}" 
+                   data-prodid="{{this.product._id}}" 
+                   value="{{this.quantity}}" 
+                   min="1" 
+                   style="width: 60px;">
+           </td>
+           <td class="subtotal">${{multiply this.product.price this.quantity}}</td>
+          <td>
+            <button class="remove-btn" 
+                    data-cartid="{{../cart._id}}" 
+                    data-prodid="{{this.product._id}}">
+              ❌ Eliminar
+            </button>
+           </td>
+         </tr>
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4"><strong>Total:</strong></td>
+        <td colspan="2"><strong id="cart-total">${{total}}</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+  
+  <div style="margin-top: 20px;">
+    <button id="clearCartBtn" data-cartid="{{cart._id}}">🗑️ Vaciar Carrito</button>
+    <button id="purchaseBtn" data-cartid="{{cart._id}}">✅ Finalizar Compra</button>
+  </div>
+{{else}}
+  <p>🛍️ El carrito está vacío. <a href="/products">Ir a comprar</a></p>
+{{/if}}
+
+<a href="/products">← Seguir comprando</a>
+
+<script>
+  console.log('Productos recibidos:', {{products.length}});
+  
+  // Actualizar cantidad
+  async function updateQuantity(cartId, productId, quantity) {
+    const res = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ quantity }),
+      credentials: 'include'
+    });
+    if (res.ok) location.reload();
+    else alert('Error al actualizar cantidad');
+  }
+
+  // Eliminar producto
+  async function removeProduct(cartId, productId) {
+    const res = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+    if (res.ok) location.reload();
+    else alert('Error al eliminar');
+  }
+
+  // Vaciar carrito
+  async function clearCart(cartId) {
+    if (!confirm('¿Vaciar todo el carrito?')) return;
+    const res = await fetch(`/api/carts/${cartId}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+    if (res.ok) location.reload();
+    else alert('Error al vaciar carrito');
+  }
+
+  // Finalizar compra
+async function purchaseCart(cartId) {
+  const res = await fetch(`/api/carts/${cartId}/purchase`, {
+    method: 'POST',
+    credentials: 'include'
+  });
+  const data = await res.json();
+  if (res.ok) {
+    // Convertir los productos comprados a JSON string para la URL
+    const purchasedProducts = encodeURIComponent(JSON.stringify(data.payload.purchasedProducts || []));
+    const failedProducts = encodeURIComponent(JSON.stringify(data.payload.failedProducts || []));
+    window.location.href = `/ticket/${data.payload.ticket._id}?cartId=${cartId}&purchasedProducts=${purchasedProducts}&failedProducts=${failedProducts}`;
+  } else {
+    alert(`❌ Error: ${data.error}`);
+  }
+}
+
+  // Event listeners (esperar a que el DOM cargue)
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.qty-input').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const newQty = parseInt(e.target.value);
+        if (newQty > 0) {
+          updateQuantity(input.dataset.cartid, input.dataset.prodid, newQty);
+        }
+      });
+    });
+
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => removeProduct(btn.dataset.cartid, btn.dataset.prodid));
+    });
+
+    const clearBtn = document.getElementById('clearCartBtn');
+    if (clearBtn) clearBtn.addEventListener('click', () => clearCart(clearBtn.dataset.cartid));
+
+    const purchaseBtn = document.getElementById('purchaseBtn');
+    if (purchaseBtn) purchaseBtn.addEventListener('click', () => purchaseCart(purchaseBtn.dataset.cartid));
+  });
+</script>

@@ -1,0 +1,106 @@
+<h1>{{product.title}}</h1>
+
+<div style="flex: 1; min-width: 200px;">
+  {{#if product.thumbnails.[0]}}
+    <img src="{{product.thumbnails.[0]}}" 
+         alt="{{product.title}}" 
+         style="max-width: 100%; border-radius: 8px;"
+         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23f0f0f0\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\' font-family=\'Arial\' font-size=\'14\'%3ESin imagen%3C/text%3E%3C/svg%3E';">
+  {{else}}
+    <div style="width: 100%; height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+      📷 Sin imagen
+    </div>
+  {{/if}}
+</div>
+  
+  <div style="flex: 2;">
+    <p><strong>Descripción:</strong> {{product.description}}</p>
+    <p><strong>Código:</strong> {{product.code}}</p>
+    <p><strong>Categoría:</strong> {{product.category}} / {{product.subcategory}}</p>
+    <p><strong>Precio:</strong> <span style="font-size: 1.5em; color: #27ae60;">${{product.price}}</span></p>
+    <p><strong>Stock:</strong> {{product.stock}} unidades</p>
+    <p><strong>Estado:</strong> 
+      {{#if product.status}}
+        <span style="color: green;">✅ Disponible</span>
+      {{else}}
+        <span style="color: red;">❌ Agotado</span>
+      {{/if}}
+    </p>
+    
+    {{#if product.status}}
+      <button id="addToCartBtn" 
+              data-id="{{product._id}}" 
+              style="padding: 10px 20px; font-size: 1.1em; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+        🛒 Agregar al Carrito
+      </button>
+    {{else}}
+      <p style="color: red;">⚠️ Producto agotado temporalmente</p>
+    {{/if}}
+  </div>
+</div>
+
+<div style="margin-top: 30px;">
+  <a href="/products">← Volver al catálogo</a>
+</div>
+
+<script>
+  async function addToCart(productId) {
+    const btn = document.getElementById('addToCartBtn');
+    if (!btn) return;
+    
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ Agregando...';
+    btn.disabled = true;
+    
+    try {
+      // Obtener el usuario actual y su carrito
+      const userRes = await fetch('/api/session/current', { 
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (!userRes.ok) {
+        throw new Error('No estás autenticado. Por favor, inicia sesión.');
+      }
+      
+      const userData = await userRes.json();
+      
+      if (!userData.user || !userData.user.cart) {
+        throw new Error('No se encontró un carrito asociado a tu usuario.');
+      }
+      
+      const cartId = userData.user.cart;
+      
+      // Agregar producto al carrito
+      const res = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quantity: 1 }),
+        credentials: 'include'
+      });
+      
+      if (res.ok) {
+        alert('✅ Producto agregado al carrito exitosamente!');
+      } else {
+        const error = await res.json();
+        throw new Error(error.error || 'Error al agregar el producto');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`❌ ${error.message}`);
+    } finally {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  }
+
+  // Adjuntar evento al botón
+  const addBtn = document.getElementById('addToCartBtn');
+  if (addBtn) {
+    addBtn.addEventListener('click', () => {
+      const productId = addBtn.getAttribute('data-id');
+      if (productId) addToCart(productId);
+    });
+  }
+</script>

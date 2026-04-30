@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .ticket-container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .ticket-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    .ticket-header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .ticket-header p {
+      margin: 10px 0 0;
+      opacity: 0.9;
+    }
+    .ticket-body {
+      padding: 30px;
+    }
+    .ticket-info {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .ticket-info p {
+      margin: 8px 0;
+    }
+    .ticket-info strong {
+      color: #2c3e50;
+    }
+    .ticket-items {
+      margin: 20px 0;
+    }
+    .ticket-items table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .ticket-items th {
+      background: #f1f3f4;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    .ticket-items td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .ticket-total {
+      text-align: right;
+      font-size: 24px;
+      font-weight: bold;
+      color: #27ae60;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #e0e0e0;
+    }
+    .ticket-footer {
+      background: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+    .btn-volver {
+      display: inline-block;
+      background: #3498db;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-top: 20px;
+      transition: background 0.3s;
+    }
+    .btn-volver:hover {
+      background: #2980b9;
+    }
+    .failed-products {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      color: #856404;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="ticket-container">
+    <div class="ticket-header">
+      <h1>🎫 COMPROBANTE DE COMPRA</h1>
+      <p>¡Gracias por tu compra!</p>
+    </div>
+    
+    <div class="ticket-body">
+      <div class="ticket-info">
+        <p><strong>📄 Número de ticket:</strong> {{ticket.code}}</p>
+        <p><strong>📅 Fecha:</strong> {{formatDate ticket.purchase_datetime}}</p>
+        <p><strong>👤 Cliente:</strong> {{ticket.purchaser}}</p>
+      </div>
+      
+      <div class="ticket-items">
+        <h3>📦 Productos comprados</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio unit.</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each purchasedItems}}
+              <tr>
+                <td>{{this.product.title}}</td>
+                <td>{{this.quantity}}</td>
+                <td>${{this.product.price}}</td>
+                <td>${{multiply this.product.price this.quantity}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="ticket-total">
+        TOTAL: ${{ticket.amount}}
+      </div>
+      
+      {{#if failedProducts.length}}
+        <div class="failed-products">
+          <strong>⚠️ Productos no disponibles (sin stock):</strong>
+          <ul>
+            {{#each failedProducts}}
+              <li>{{this.title}} - Código: {{this.code}}</li>
+            {{/each}}
+          </ul>
+          <p>Estos productos no se incluyeron en la compra y permanecen en tu carrito.</p>
+        </div>
+      {{/if}}
+    </div>
+    
+    <div class="ticket-footer">
+      <p>Este comprobante es válido como constancia de compra.</p>
+      <p>Para cualquier consulta, contacta a soporte@ecommerce.com</p>
+      <a href="/products" class="btn-volver">🛍️ Seguir comprando</a>
+      <a href="/carts/{{cartId}}" class="btn-volver" style="background: #95a5a6;">🛒 Ver carrito</a>
+    </div>
+  </div>
+</body>
+</html>
