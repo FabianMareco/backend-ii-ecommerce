@@ -1,127 +1,75 @@
-# 🚀 Backend II - Ecommerce con Roles, Tickets y WebSockets
+# 🚀 MUEVETE – Backend E-commerce con Roles, Tickets y WebSockets
 
-## 📖 Descripción
+API RESTful para un e-commerce de productos de danza y merchandising,
+desarrollada con Node.js, Express, MongoDB Atlas, Handlebars, Socket.io
+y Passport JWT. Implementa autenticación por cookies, roles de usuario
+(`admin` / `user`), gestión de carritos, generación de tickets con
+validación de stock, y vistas en tiempo real mediante WebSockets.
 
-API RESTful para un e-commerce de productos de danza y merchandising, desarrollada con **Node.js**, **Express**, **MongoDB Atlas**, **Handlebars**, **Socket.io** y **Passport JWT**. Implementa autenticación por cookies, roles de usuario (`admin` / `user`), gestión de carritos de compra, generación de tickets por compra con validación de stock, y vistas en tiempo real mediante WebSockets.
+## 🛠️ Tecnologías
 
-Proyecto final para el curso **Backend II** de Coderhouse.
+| Tecnología | Uso |
+|---|---|
+| Node.js + Express | Servidor web |
+| MongoDB Atlas + Mongoose | Base de datos y ODM |
+| Passport + JWT | Autenticación vía cookies |
+| bcrypt | Hasheo de contraseñas |
+| express-handlebars | Motor de plantillas |
+| Socket.io | Comunicación en tiempo real |
+| Nodemailer | Recuperación de contraseña |
+| dotenv | Variables de entorno |
 
----
+## 📁 Estructura del proyecto
 
-## 🛠️ Tecnologías utilizadas
-
-- **Node.js** + **Express** – Servidor web
-- **MongoDB Atlas** + **Mongoose** – Base de datos y ODM
-- **Passport** + **JWT** – Autenticación vía cookies
-- **bcrypt** – Hasheo de contraseñas
-- **express-handlebars** – Motor de plantillas
-- **Socket.io** – Comunicación en tiempo real
-- **Nodemailer** – Recuperación de contraseña (opcional)
-- **dotenv** – Variables de entorno
-- **Postman** – Pruebas de API (recomendado)
-
----
-
-## 📁 Estructura del proyecto (arquitectura por capas)
+```
 Backend II/
-├── config
-│   └── config.js
-├── logs
-├── src
-│   ├── config
+├── config/
+├── src/
+│   ├── config/
 │   │   ├── config.js
 │   │   ├── db.js
 │   │   └── passport.config.js
-│   ├── controllers
-│   │   ├── cart.controller.js
-│   │   ├── product.controller.js
-│   │   ├── session.controller.js
-│   │   └── user.controller.js
-│   ├── dao
-│   │   ├── models
-│   │   │   ├── cart.model.js
-│   │   │   ├── product.model.js
-│   │   │   ├── ticket.model.js
-│   │   │   └── user.model.js
-│   │   ├── mongo
-│   │   │   ├── cart.dao.js
-│   │   │   ├── product.dao.js
-│   │   │   ├── ticket.dao.js
-│   │   │   └── user.dao.js
-│   │   └── factory.js
-│   ├── dtos
-│   │   └── user.dto.js
-│   ├── middlewares
-│   │   ├── authJwt.js
-│   │   ├── errorHandler.js
-│   │   └── handlePolicies.js
-│   ├── models
-│   │   ├── Cart.js
-│   │   ├── Product.js
-│   │   ├── Ticket.js
-│   │   └── User.js
-│   ├── public
-│   │   ├── css
-│   │   │   └── style.css
-│   │   └── js
-│   │       └── realTime.js
-│   ├── repositories
-│   │   ├── cart.repository.js
-│   │   ├── product.repository.js
-│   │   ├── ticket.repository.js
-│   │   └── user.repository.js
-│   ├── routes
-│   │   ├── carts.routes.js
-│   │   ├── products.routes.js
-│   │   ├── session.routes.js
-│   │   ├── user.routes.js
-│   │   └── views.routes.js
-│   ├── services
-│   │   ├── cart.service.js
-│   │   ├── index.js
-│   │   ├── product.service.js
-│   │   └── ticket.service.js
-│   ├── utils
-│   │   ├── bcrypt.js
-│   │   ├── cookieExtractor.js
-│   │   ├── jwt.js
-│   │   └── mailer.js
-│   ├── views
-│   │   ├── layouts
-│   │   │   └── main.handlebars
-│   │   ├── cart.handlebars
-│   │   ├── home.handlebars
-│   │   ├── productDetail.handlebars
-│   │   ├── products.handlebars
-│   │   ├── realTimeProducts.handlebars
-│   │   └── ticket.handlebars
+│   ├── controllers/
+│   ├── dao/
+│   │   ├── models/
+│   │   └── mongo/
+│   ├── dtos/
+│   ├── middlewares/
+│   ├── repositories/
+│   ├── routes/
+│   ├── services/
+│   ├── utils/
+│   ├── views/
+│   │   └── layouts/
 │   ├── app.js
-│   ├── server.js
-│   └── utils.js
-├── cookies.txt
+│   └── server.js
 ├── createAdmin.js
-├── package.json
-├── package-lock.json
-├── README.md
 ├── seed.js
-└── test-server.js
----
+└── package.json
+```
 
 ## ⚙️ Instalación y configuración
 
 ### 1. Clonar el repositorio
+
 ```bash
 git clone https://github.com/tu-usuario/backend-ii-ecommerce.git
 cd backend-ii-ecommerce
-2. Instalar dependencias
-bash
-npm install
-3. Configurar variables de entorno
-Crea un archivo .env en la raíz basado en .env.example:
+```
 
-env
+### 2. Instalar dependencias
+
+```bash
+npm install
+```
+
+### 3. Configurar variables de entorno
+
+Crear un archivo `.env` en la raíz basado en `.env.example`:
+
+```env
 PORT=3000
-MONGODB_URI=mongodb+srv://<usuario>:<contraseña>@cluster0.xxxxx.mongodb.net/ecommerce_backend_ii?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://<usuario>:<contraseña>@cluster0.xxxxx.mongodb.net/ecommerce_backend_ii
 JWT_SECRET=tu_clave_secreta_muy_fuerte
 COOKIE_NAME=access_token
 NODEMAILER_USER=tu_email@gmail.com
@@ -130,211 +78,151 @@ NODEMAILER_HOST=smtp.gmail.com
 NODEMAILER_PORT=587
 CLIENT_URL_BASE=http://localhost:3000
 PERSISTENCE=mongo
-⚠️ Importante:
+```
 
-Si no usas Nodemailer, puedes dejar los valores ficticios.
+> Si no usás Nodemailer, podés dejar esos valores ficticios. La base de datos
+> se crea automáticamente al insertar el primer documento.
 
-La base de datos ecommerce_backend_ii se creará automáticamente al insertar el primer documento.
+### 4. Cargar productos de ejemplo
 
-4. Cargar productos de ejemplo
-bash
+```bash
 npm run seed
-5. Crear usuario administrador
-bash
+```
+
+### 5. Crear usuario administrador
+
+```bash
 npm run createAdmin
-6. Iniciar el servidor
-bash
+```
+
+### 6. Iniciar el servidor
+
+```bash
 npm run dev
-El servidor estará disponible en http://localhost:3000.
+```
 
-🔐 Credenciales de prueba
-Rol	Email	Contraseña
-Admin	admin@example.com	admin123
-User	cliente@test.com	cliente123
-(opcional)	cualquier email registrado	la que elijas
-Puedes registrar nuevos usuarios desde la API o desde la vista /products (sin necesidad de formulario, usa Postman o la consola del navegador).
+Disponible en `http://localhost:3000`.
 
-🌐 Vistas disponibles (frontend)
-URL	Descripción
-/products	Catálogo de productos con paginación, filtros y ordenamiento
-/products/:pid	Detalle de un producto (con botón “Agregar al carrito”)
-/carts/:cid	Vista del carrito (ver productos, cantidades, eliminar, vaciar, comprar)
-/realtimeproducts	Lista de productos actualizada en tiempo real con WebSockets (agregar/eliminar productos)
-/ticket/:tid?cartId=...	Comprobante de compra (ticket) después de finalizar la compra
-/home	Página de bienvenida (redirige a /products)
-📡 API REST (endpoints)
-Autenticación
-Método	Endpoint	Cuerpo (JSON)	Descripción
-POST	/api/session/register	{"first_name":"Juan","last_name":"Perez","email":"juan@test.com","password":"123456"}	Registra un usuario normal (rol user)
-POST	/api/session/login	{"email":"admin@example.com","password":"admin123"}	Inicia sesión y devuelve cookie access_token
-GET	/api/session/current	–	Devuelve el usuario actual (DTO, sin password)
-POST	/api/session/logout	–	Cierra sesión (elimina cookie)
-POST	/api/session/forgot-password	{"email":"admin@example.com"}	Envía email de recuperación (requiere Nodemailer)
-POST	/api/session/reset-password	{"token":"...","newPassword":"nueva123"}	Restablece contraseña (token válido 1 hora)
-Productos (solo admin puede crear/actualizar/eliminar)
-Método	Endpoint	Descripción
-GET	/api/products	Lista productos con paginación, filtros y ordenamiento (ver más abajo)
-GET	/api/products/:pid	Obtiene un producto por ID
-POST	/api/products	Crea un nuevo producto (requiere admin)
-PUT	/api/products/:pid	Actualiza un producto (requiere admin)
-DELETE	/api/products/:pid	Elimina un producto (requiere admin)
-Parámetros de consulta para GET /api/products:
+## 🔐 Credenciales de prueba
 
-limit (default 10) – cantidad por página
+| Rol | Email | Contraseña |
+|---|---|---|
+| Admin | admin@example.com | admin123 |
+| User | cliente@test.com | cliente123 |
 
-page (default 1) – número de página
+## 🌐 Vistas disponibles
 
-sort – asc o desc por precio
+| URL | Descripción |
+|---|---|
+| `/products` | Catálogo con paginación, filtros y ordenamiento |
+| `/products/:pid` | Detalle de producto |
+| `/carts/:cid` | Vista del carrito |
+| `/realtimeproducts` | Lista de productos en tiempo real (WebSockets) |
+| `/ticket/:tid?cartId=...` | Comprobante de compra |
+| `/home` | Bienvenida (redirige a `/products`) |
 
-query – filtro: category:merchandising o status:true o texto libre (busca en título, descripción, código)
+## 📡 Endpoints
 
-Ejemplo:
+### Autenticación
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| POST | `/api/session/register` | Registra un usuario (`rol: user`) |
+| POST | `/api/session/login` | Inicia sesión → devuelve cookie `access_token` |
+| GET | `/api/session/current` | Usuario actual (DTO, sin password) |
+| POST | `/api/session/logout` | Cierra sesión |
+| POST | `/api/session/forgot-password` | Envía email de recuperación |
+| POST | `/api/session/reset-password` | Restablece contraseña (token válido 1 hora) |
+
+### Productos *(solo admin puede crear, actualizar o eliminar)*
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| GET | `/api/products` | Lista con paginación, filtros y ordenamiento |
+| GET | `/api/products/:pid` | Obtiene un producto por ID |
+| POST | `/api/products` | Crea un producto |
+| PUT | `/api/products/:pid` | Actualiza un producto |
+| DELETE | `/api/products/:pid` | Elimina un producto |
+
+**Parámetros de consulta para `GET /api/products`:**
+
+- `limit` (default `10`) — cantidad por página
+- `page` (default `1`) — número de página
+- `sort` — `asc` o `desc` por precio
+- `query` — filtro: `category:merchandising`, `status:true` o texto libre
+
+```
 /api/products?limit=3&page=2&sort=asc&query=category:merchandising
+```
 
-Carritos (requieren autenticación)
-Método	Endpoint	Cuerpo (JSON)	Descripción
-POST	/api/carts	–	Crea un carrito vacío (generalmente se asocia automáticamente al usuario)
-GET	/api/carts/:cid	–	Obtiene el carrito con productos populados (solo el dueño)
-POST	/api/carts/:cid/products/:pid	{"quantity":1} (opcional, default 1)	Agrega un producto al carrito (suma cantidad si ya existe)
-PUT	/api/carts/:cid/products/:pid	{"quantity":5}	Actualiza la cantidad de un producto
-DELETE	/api/carts/:cid/products/:pid	–	Elimina un producto del carrito
-PUT	/api/carts/:cid	{"products":[{"product":"id","quantity":2}]}	Reemplaza todo el carrito
-DELETE	/api/carts/:cid	–	Vacía el carrito completamente
-POST	/api/carts/:cid/purchase	–	Finaliza la compra: valida stock, descuenta, genera ticket y devuelve productos no procesados
-Tickets (solo consulta)
-Método	Endpoint	Descripción
-GET	/api/tickets/:tid	Obtiene un ticket por ID (no es obligatorio en la consigna, pero útil)
-Nota: Los tickets se generan automáticamente al comprar y se guardan en la colección tickets.
+### Carritos *(requieren autenticación)*
 
-🧪 Pruebas recomendadas con Postman
-Configuración previa
-Crea una colección en Postman con las requests a http://localhost:3000
+| Método | Endpoint | Descripción |
+|---|---|---|
+| POST | `/api/carts` | Crea un carrito vacío |
+| GET | `/api/carts/:cid` | Obtiene el carrito con productos populados |
+| POST | `/api/carts/:cid/products/:pid` | Agrega un producto (suma cantidad si ya existe) |
+| PUT | `/api/carts/:cid/products/:pid` | Actualiza la cantidad de un producto |
+| DELETE | `/api/carts/:cid/products/:pid` | Elimina un producto del carrito |
+| PUT | `/api/carts/:cid` | Reemplaza todo el carrito |
+| DELETE | `/api/carts/:cid` | Vacía el carrito |
+| POST | `/api/carts/:cid/purchase` | Finaliza la compra, genera ticket y actualiza stock |
 
-Asegúrate de que Postman maneje automáticamente las cookies (por defecto lo hace).
+## 🎫 Flujo de compra
 
-Flujo de pruebas
-1. Registrar un usuario normal
-text
-POST /api/session/register
-Body raw JSON:
-{
-  "first_name": "Cliente",
-  "last_name": "Uno",
-  "email": "cliente@test.com",
-  "password": "cliente123"
-}
-2. Login como usuario normal
-text
-POST /api/session/login
-Body:
-{
-  "email": "cliente@test.com",
-  "password": "cliente123"
-}
-→ La cookie access_token se guarda automáticamente.
+Al llamar a `POST /api/carts/:cid/purchase`:
 
-3. Ver usuario actual (DTO)
-text
-GET /api/session/current
-→ No debe mostrar la contraseña.
+1. Se valida el stock de cada producto en el carrito
+2. Los productos con stock suficiente se descuentan y se incluyen en el ticket
+3. Los productos sin stock se devuelven como `failedProducts` (quedan en el carrito)
+4. Se genera un ticket con código único, fecha, monto total y email del comprador
+5. La respuesta incluye el ticket, los productos comprados, los fallidos y el total
 
-4. Crear un carrito (si no se creó automáticamente)
-text
-POST /api/carts
-→ Guarda el _id devuelto.
+## ⚡ WebSockets
 
-5. Agregar un producto al carrito
-Primero obtén un productId válido de GET /api/products. Luego:
+La vista `/realtimeproducts` se conecta via Socket.io. Al agregar o eliminar
+un producto desde esa vista, la lista se actualiza instantáneamente en todos
+los clientes conectados. Eventos: `newProduct`, `deleteProduct`, `updateProducts`.
 
-text
-POST /api/carts/:cid/products/:pid
-Body: { "quantity": 2 }
-6. Ver el carrito
-text
-GET /api/carts/:cid
-7. Finalizar compra (genera ticket)
-text
-POST /api/carts/:cid/purchase
-→ Devolverá un ticket y actualizará el stock.
+## 🧪 Flujo de prueba con Postman
 
-8. Probar operaciones de admin (requiere login como admin)
-Login con admin@example.com / admin123
+1. `POST /api/session/register` — crear usuario
+2. `POST /api/session/login` — la cookie `access_token` se guarda automáticamente
+3. `GET /api/session/current` — verificar que no expone la contraseña
+4. `POST /api/carts` — crear carrito y guardar el `_id`
+5. `GET /api/products` — obtener un `productId` válido
+6. `POST /api/carts/:cid/products/:pid` con `{ "quantity": 2 }`
+7. `GET /api/carts/:cid` — ver el carrito
+8. `POST /api/carts/:cid/purchase` — finalizar compra y recibir ticket
+9. Login como admin → probar `POST`, `PUT`, `DELETE` en `/api/products`
+10. Con usuario normal → verificar `403 Forbidden` al intentar lo mismo
 
-POST /api/products – crear producto
+## 🧑‍💻 Scripts
 
-PUT /api/products/:pid – actualizar producto
+| Comando | Descripción |
+|---|---|
+| `npm run dev` | Servidor con Nodemon (recarga automática) |
+| `npm run seed` | Carga productos de ejemplo |
+| `npm run createAdmin` | Crea el usuario administrador |
+| `npm start` | Servidor en modo producción |
 
-DELETE /api/products/:pid – eliminar producto
+## ❓ Preguntas frecuentes
 
-9. Verificar que un usuario normal no puede crear/actualizar/eliminar productos
-Debe recibir 403 Forbidden o 401 Unauthorized.
+**¿Por qué `GET /api/carts` devuelve 404?**
+Solo se puede acceder a un carrito específico via `GET /api/carts/:cid`.
 
-⚡ WebSockets – Tiempo real
-La vista /realtimeproducts se conecta mediante Socket.io.
+**¿Cómo sé qué `cartId` tengo?**
+Desde `GET /api/session/current` (campo `cart`), o en `localStorage` si
+agregaste productos desde el navegador.
 
-Al agregar o eliminar un producto (desde el formulario de esa misma vista), la lista se actualiza instantáneamente en todos los clientes conectados.
+**¿Puedo probar la recuperación de contraseña sin Nodemailer?**
+No, requiere una cuenta real y las variables de entorno configuradas.
+Para Gmail usá una contraseña de aplicación, no la contraseña normal.
 
-Los eventos utilizados son: newProduct, deleteProduct, updateProducts.
+**¿El admin puede ver el carrito de otro usuario?**
+No. El middleware `handlePolicies` y la validación `req.user.cart === cid`
+lo impiden.
 
-🎫 Generación de tickets (compra)
-Cuando se llama a POST /api/carts/:cid/purchase:
+## 🧑‍💻 Autor
 
-Se verifica el stock de cada producto en el carrito.
-
-Si hay stock suficiente, se resta la cantidad comprada y se añade el producto a la lista de comprados.
-
-Si no hay stock, el producto se añade a failedProducts y no se compra.
-
-Se crea un ticket con:
-
-code único (ej: TICKET-1742345678900-ABC123)
-
-purchase_datetime automático
-
-amount = total de la compra
-
-purchaser = email del usuario logueado
-
-El carrito se actualiza eliminando los productos comprados (quedan solo los fallidos).
-
-La respuesta incluye el ticket, los productos comprados, los fallidos y el total.
-
-🧑‍💻 Scripts útiles (en package.json)
-Comando	Descripción
-npm run dev	Inicia el servidor con Nodemon (recarga automática)
-npm run seed	Carga productos de ejemplo en la base de datos
-npm run createAdmin	Crea el usuario administrador por defecto
-npm start	Inicia el servidor en modo producción
-📦 Variables de entorno (.env.example)
-env
-PORT=3000
-MONGODB_URI=mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/ecommerce_backend_ii
-JWT_SECRET=mi_clave_secreta
-COOKIE_NAME=access_token
-NODEMAILER_USER=email@gmail.com
-NODEMAILER_PASS=xxxx xxxx xxxx xxxx
-NODEMAILER_HOST=smtp.gmail.com
-NODEMAILER_PORT=587
-CLIENT_URL_BASE=http://localhost:3000
-PERSISTENCE=mongo
-Nota: Para usar Nodemailer con Gmail, necesitas una contraseña de aplicación (no la contraseña normal de Gmail).
-❓ Preguntas frecuentes
-¿Por qué GET /api/carts devuelve 404?
-Porque la consigna no requiere listar todos los carritos. Solo se puede acceder a un carrito específico mediante GET /api/carts/:cid.
-
-¿Cómo sé qué cartId tengo?
-Después de login, puedes obtenerlo desde GET /api/session/current (campo cart). También se guarda en localStorage cuando agregas productos desde el navegador.
-
-¿Puedo probar la recuperación de contraseña sin Nodemailer?
-No, necesitas una cuenta de email real y configurar correctamente las variables. 
-
-¿El administrador puede ver el carrito de otros usuarios?
-No. El middleware handlePolicies y la validación de propiedad (req.user.cart === cid) impiden que un usuario acceda a un carrito que no le pertenece.
-
-📝 Licencia
-Este proyecto es de uso académico para Coderhouse. Puedes usarlo como base para tu propio proyecto.
-
-👨‍💻 Autor
-Desarrollado como parte del curso Backend II – Coderhouse.
-Para dudas o mejoras, contacta al autor a través del repositorio.
-
+Fabian Mareco
